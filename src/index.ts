@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import cors from 'cors'
 import config from './config/app'
 import authRoutes from './users/routes/auth.routes'
+import postRoutes from './blog/routes/post.routes'
 
 const app = express()
 app.use(cors())
@@ -15,6 +16,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use('/auth', authRoutes)
+app.use('/posts', postRoutes)
 
 app.listen(SERVER_PORT, () => {
   console.log(`Dev server running at: http://${SERVER_HOST}:${SERVER_PORT}`)

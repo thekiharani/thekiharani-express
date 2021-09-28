@@ -30,11 +30,7 @@ const Register = async (req: Request, res: Response) => {
       `Hi ${surname}, use the following code as your account verification code: <br /> <h1>${otp}</h1>`
     )
 
-    return res.status(201).json({
-      status: 201,
-      message: 'User created',
-      user: user,
-    })
+    return res.status(201).json({ status: 201, message: 'created', user: user })
   } catch (error: any) {
     return res.status(error.status || 500).json({
       status: error.status || 500,
@@ -49,9 +45,7 @@ const Login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
     const user = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
+      where: { email: email },
     })
 
     if (!user) {
@@ -66,10 +60,7 @@ const Login = async (req: Request, res: Response) => {
       })
     }
 
-    const payload = {
-      id: user.id,
-      email: user.email,
-    }
+    const payload = { id: user.id, email: user.email }
 
     const token = jwt.sign(payload, config.server.token.secret, {
       algorithm: 'HS256',
@@ -104,9 +95,7 @@ const Verify = async (req: Request, res: Response) => {
   try {
     const { otp } = req.body
     const user = await prisma.user.findUnique({
-      where: {
-        id: res.locals.user.id,
-      },
+      where: { id: res.locals.user.id },
     })
 
     if (user?.isVerified) {
@@ -118,13 +107,8 @@ const Verify = async (req: Request, res: Response) => {
     }
 
     const activatedUser = await prisma.user.update({
-      where: {
-        id: res.locals.user.id,
-      },
-      data: {
-        otpCode: null,
-        isVerified: true,
-      },
+      where: { id: res.locals.user.id },
+      data: { otpCode: null, isVerified: true },
     })
 
     return res.status(200).json({
@@ -144,16 +128,10 @@ const Verify = async (req: Request, res: Response) => {
 // Profile
 const Profile = async (req: Request, res: Response) => {
   const profile = await prisma.user.findUnique({
-    where: {
-      id: res.locals.user.id,
-    },
+    where: { id: res.locals.user.id },
   })
 
-  return res.status(200).json({
-    status: 200,
-    message: 'ok',
-    profile: profile,
-  })
+  return res.status(200).json({ status: 200, message: 'ok', profile: profile })
 }
 
 export default { Register, Login, Verify, Profile }
