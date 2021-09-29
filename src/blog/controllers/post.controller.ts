@@ -6,7 +6,9 @@ const prisma = new PrismaClient()
 // Get Posts
 const GetPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await prisma.post.findMany({})
+    const posts = await prisma.post.findMany({
+      where: { authorId: res.locals.user.id },
+    })
     return res.status(200).json({ status: 200, message: 'ok', posts: posts })
   } catch (error: any) {
     return res.status(error.status || 500).json({
